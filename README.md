@@ -76,12 +76,46 @@ sits up and to the right — larger cavity *and* thicker wall.
 both" is a single sport (fencing); tests use pooled summary statistics rather
 than individual-level data; and associations are observational, not causal.
 
+## An alternative cut: upper vs. lower body
+
+Does it instead matter *which muscle groups* drive the sport? `analyze_body.py`
+regroups the 25 sports (judgment-based) into **lower-body** (8: track, cycling,
+soccer, skating, alpine skiing, bobsled, tae kwon do, equestrian), **upper-body**
+(11: swimming, canoeing, water polo, tennis, boxing, handball, fencing,
+sailing, volleyball, wrestling/judo, throws), and
+**whole-body** (6: rowing, cross-country skiing, pentathlon, weightlifting,
+diving, roller hockey), and reruns the same analysis (`python plot_body.py`).
+
+![Trends by body region](trends_by_body_region.png)
+
+| Body region | Sports | n   | LVEDd (mm)  | Wall thickness (mm) |
+|-------------|:------:|:---:|:-----------:|:-------------------:|
+| Lower-body  |   8    | 367 | 52.3 ± 4.5  | 9.60 ± 1.13         |
+| Upper-body  |  11    | 363 | 52.7 ± 4.0  | 9.55 ± 1.27         |
+| Whole-body  |   6    | 217 | 54.3 ± 3.8  | 10.24 ± 1.45        |
+
+**The upper/lower distinction barely matters.** Upper- and lower-body sports are
+statistically indistinguishable on both dimensions (LVEDd Δ = 0.4 mm, `p = 0.19`;
+wall thickness Δ = 0.05 mm, `p = 0.61`). The only significant differences are
+**whole-body vs. either** (all `p < 1e-5`, Cohen's *d* ≈ 0.4–0.5): whole-body
+sports have the largest cavity *and* wall. The overall ANOVA is significant only
+because of that whole-body group (LVEDd `F(2,944) = 15.6, p ≈ 2e-7`; wall
+thickness `F(2,944) = 23.3, p ≈ 1e-10`).
+
+This mirrors the Mitchell result: remodeling tracks whole-body endurance load
+(the whole-body group overlaps the high-dynamic + static sports), not the
+upper-vs-lower-body split. Groupings are judgment-based and editable in
+`analyze_body.py`.
+
 ## Files
 
 | File | Purpose |
 |------|---------|
 | [`sport_heart_ellipses.py`](sport_heart_ellipses.py) | Builds the ellipse figure (PDF + PNG) |
-| [`analyze_trends.py`](analyze_trends.py) | Category statistics, ANOVA, and pairwise tests |
-| [`plot_trends.py`](plot_trends.py) | Summary figure: one ±1 SD ellipse per exercise class, same axes |
+| [`analyze_trends.py`](analyze_trends.py) | Mitchell-class statistics, ANOVA, and pairwise tests |
+| [`plot_trends.py`](plot_trends.py) | Summary figure: one ±1 SD ellipse per Mitchell class, same axes |
+| [`analyze_body.py`](analyze_body.py) | Upper/lower/whole-body statistics, ANOVA, and pairwise tests |
+| [`plot_body.py`](plot_body.py) | Summary figure: one ±1 SD ellipse per body region, same axes |
 | `sport_heart_ellipses.pdf` / `.png` | Generated per-sport ellipse figure |
-| `trends_by_classification.pdf` / `.png` | Generated summary figure |
+| `trends_by_classification.pdf` / `.png` | Generated Mitchell-class summary figure |
+| `trends_by_body_region.pdf` / `.png` | Generated body-region summary figure |
