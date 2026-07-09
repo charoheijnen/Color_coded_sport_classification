@@ -1,97 +1,78 @@
-import pandas as pd
-import matplotlib.pyplot as plt
+# Athlete's Heart: Cardiac Remodeling by Sport
 
-# colors based on mitchell classification
-# blue = dynamic, red = static, green = both high, gray = both low
-sport_color = {
-    "Rowing": "green",
-    "Track": "blue",
-    "Cycling": "green",
-    "Soccer": "blue",
-    "Canoeing": "green",
-    "Roller-skating": "green",
-    "Swimming": "blue",
-    "Volleyball": "blue",
-    "Pentathlon": "blue",
-    "Tennis": "blue",
-    "Fencing": "gray",
-    "Alpine skiing": "green",
-    "Cross-country skiing": "green",
-    "Equestrianism": "red",
-    "Team handball": "blue",
-    "Yachting": "red",
-    "Roller hockey": "blue",
-    "Water polo": "blue",
-    "Tae kwon do": "blue",
-    "Wrestling and judo": "red",
-    "Bobsledding": "green",
-    "Boxing": "blue",
-    "Diving": "red",
-    "Field weight events": "red",
-    "Weightlifting": "red",
-}
+Visualization and analysis of left-ventricular (LV) remodeling across 25 sports,
+colored by the **Mitchell / Task Force 8 classification** of exercise (the
+static vs. dynamic demand of each sport).
 
-sports = ["Rowing","Track","Cycling","Soccer","Canoeing","Roller-skating",
-    "Swimming","Volleyball","Pentathlon","Tennis","Fencing","Alpine skiing",
-    "Cross-country skiing","Equestrianism","Team handball","Yachting",
-    "Roller hockey","Water polo","Tae kwon do","Wrestling and judo",
-    "Bobsledding","Boxing","Diving","Field weight events","Weightlifting"]
+**Data source:** Spirito P, Pelliccia A, Proschan MA, *et al.* "Morphology of the
+'athlete's heart' assessed by echocardiography in 947 elite athletes representing
+27 sports." *Am J Cardiol* 1994;74(8):802–806
+([doi:10.1016/0002-9149(94)90439-1](https://doi.org/10.1016/0002-9149(94)90439-1)).
+Per-sport mean ± SD and athlete counts are taken from Table I. The paper's two
+cycling rows (endurance + sprint) and two track rows (long-distance + sprint) are
+each merged into one, giving 25 sports whose counts still sum to 947.
 
-lved_mean = [56.0,51.4,54.8,54.9,54.5,49.0,53.0,53.7,52.4,50.0,51.7,52.0,
-    54.5,50.4,51.8,51.2,53.4,54.7,50.6,52.6,55.1,52.5,49.6,55.5,53.2]
+## Figure
 
-lved_sd = [3,4,5,4,3,4,4,3,4,3,5,3,4,3,4,4,3,3,4,5,2,3,3,4,3]
+![Cardiac remodeling by sport](sport_heart_ellipses.png)
 
-wt_mean = [11.3,9.8,10.4,9.9,10.5,9.0,9.3,9.4,9.2,9.1,9.2,8.9,9.6,9.0,
-    8.5,9.0,9.7,10.7,8.7,10.2,9.6,9.8,8.7,10.0,10.4]
+Each ellipse is one sport, centered on its mean LV end-diastolic dimension
+(LVEDd) and wall thickness, with half-axes of ±1 SD. Fill color encodes the
+Mitchell class: **green** = high dynamic + static, **blue** = high dynamic,
+**red** = high static, **gray** = low both.
 
-wt_sd = [1.3,1.2,1.1,0.7,1.5,1.0,1.2,1.0,0.9,1.0,1.3,0.9,0.8,0.8,0.9,0.8,
-    0.9,0.6,1.2,0.9,0.5,1.0,1.1,0.5,0.7]
+```
+python sport_heart_ellipses.py      # writes sport_heart_ellipses.pdf and .png
+```
 
-# shorten some labels so they don't overlap on the plot
-abbrev = {
-    "Cross-country skiing": "XC Ski",
-    "Wrestling and judo": "Wrest/Judo",
-    "Field weight events": "Throws",
-    "Roller-skating": "Roller",
-    "Team handball": "Handball",
-    "Water polo": "WaterPolo",
-    "Alpine skiing": "Alpine",
-    "Tae kwon do": "TKD",
-    "Roller hockey": "R.Hockey",
-    "Equestrianism": "Equestrian",
-}
+Requires `numpy`, `matplotlib`, and a working LaTeX installation (labels are
+typeset with LaTeX). Labels are placed with a small force-based de-overlap pass.
 
-df = pd.DataFrame({
-    "Sport": sports,
-    "LVED_mean": lved_mean,
-    "LVED_sd": lved_sd,
-    "WallThickness_mean": wt_mean,
-    "WallThickness_sd": wt_sd,
-})
-df["color"] = df["Sport"].map(sport_color)
-df["label"] = df["Sport"].apply(lambda s: abbrev.get(s, s))
+## Does heart shape track with exercise type?
 
-plt.figure(figsize=(11, 8))
+```
+python analyze_trends.py
+```
 
-for i, row in df.iterrows():
-    plt.errorbar(row["LVED_mean"], row["WallThickness_mean"],
-        xerr=row["LVED_sd"], yerr=row["WallThickness_sd"],
-        fmt='o', capsize=2, elinewidth=0.6, markersize=6,
-        color=row["color"], ecolor=row["color"], alpha=0.8)
-    plt.annotate(row["label"], (row["LVED_mean"], row["WallThickness_mean"]),
-        xytext=(5,5), textcoords="offset points", fontsize=7.5, color=row["color"])
+Only per-sport summary statistics are public, so category-level statistics are
+pooled *exactly* from each sport's (n, mean, SD) — the within-category variance
+combines within-sport and between-sport spread of the individual athletes.
 
-# legend 
-blue_dot = plt.Line2D([0],[0], marker='o', color='w', markerfacecolor='blue', markersize=8, label='High Dynamic')
-red_dot = plt.Line2D([0],[0], marker='o', color='w', markerfacecolor='red', markersize=8, label='High Static')
-green_dot = plt.Line2D([0],[0], marker='o', color='w', markerfacecolor='green', markersize=8, label='High Dynamic + Static')
-gray_dot = plt.Line2D([0],[0], marker='o', color='w', markerfacecolor='gray', markersize=8, label='Low Both')
+| Mitchell category            | Sports | n   | LVEDd (mm)     | Wall thickness (mm) |
+|------------------------------|:------:|:---:|:--------------:|:-------------------:|
+| High dynamic + static (green)|   7    | 356 | 53.9 ± 4.4     | 10.2 ± 1.5          |
+| High dynamic (blue)          |  11    | 454 | 52.6 ± 4.0     | 9.5 ± 1.1           |
+| High static (red)            |   6    | 95  | 51.6 ± 4.0     | 9.4 ± 1.0           |
+| Low both (gray, fencing only)|   1    | 42  | 51.7 ± 5.0     | 9.2 ± 1.3           |
 
-plt.xlabel("LVED (mm)")
-plt.ylabel("Wall Thickness (mm)")
-plt.title("Athlete Cardiac Remodeling by Sport\n(Colour = Mitchell Classification)")
-plt.legend(handles=[blue_dot, red_dot, green_dot, gray_dot], fontsize=9, loc="upper left")
-plt.grid(True)
-plt.tight_layout()
-plt.show()
+One-way ANOVA across the four categories is significant for both dimensions:
+LVEDd `F(3,943) = 11.6, p ≈ 2e-7`; wall thickness `F(3,943) = 26.8, p ≈ 1e-16`.
+
+**Trends:**
+
+- **High dynamic + static sports (rowing, cycling, canoeing, cross-country
+  skiing…) remodel the most on *both* axes.** They have both the largest cavity
+  and the thickest wall, and are significantly greater than every other category
+  (all pairwise `p < 0.01`; wall-thickness effect sizes Cohen's *d* = 0.5–0.7).
+- **A clean "static → thick wall / dynamic → big cavity" split is *not* seen
+  here.** High-static sports do not show disproportionately thick walls: on wall
+  thickness the high-dynamic, high-static, and low-both groups are statistically
+  indistinguishable (pairwise `p > 0.15`). This matches the original paper's
+  conclusion that isometric athletes' absolute wall thickness stays within normal
+  limits.
+- **Cavity size and wall thickness grow together**, not as a trade-off:
+  athlete-weighted correlation across the 25 sports is `r = 0.79`. The dominant
+  axis of variation is overall (balanced) remodeling, largely tracking the
+  endurance/volume load of the sport rather than a static-vs-dynamic dichotomy.
+
+**Caveats:** classifications are the color assignments used in this repo; "low
+both" is a single sport (fencing); tests use pooled summary statistics rather
+than individual-level data; and associations are observational, not causal.
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| [`sport_heart_ellipses.py`](sport_heart_ellipses.py) | Builds the ellipse figure (PDF + PNG) |
+| [`analyze_trends.py`](analyze_trends.py) | Category statistics, ANOVA, and pairwise tests |
+| `sport_heart_ellipses.pdf` / `.png` | Generated figure |
