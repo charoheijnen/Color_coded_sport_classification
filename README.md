@@ -50,8 +50,10 @@ LVEDd `F(3,943) = 11.6, p ≈ 2e-7`; wall thickness `F(3,943) = 26.8, p ≈ 1e-1
 
 ![Trends by Mitchell classification](trends_by_classification.png)
 
-Category mean ± 95% CI, ordered by training load; brackets are Welch *t*-tests
-against the high-dynamic + static class (`python plot_trends.py`).
+Summary of the per-sport figure on the same axes: one **±1 SD ellipse per
+exercise class** (athlete-weighted mean, pooled SD), labeled by exercise form
+and athlete count (`python plot_trends.py`). The high-dynamic + static class
+sits up and to the right — larger cavity *and* thicker wall.
 
 **Trends:**
 
@@ -80,6 +82,6 @@ than individual-level data; and associations are observational, not causal.
 |------|---------|
 | [`sport_heart_ellipses.py`](sport_heart_ellipses.py) | Builds the ellipse figure (PDF + PNG) |
 | [`analyze_trends.py`](analyze_trends.py) | Category statistics, ANOVA, and pairwise tests |
-| [`plot_trends.py`](plot_trends.py) | Two-panel trends figure (mean ± 95% CI + significance) |
-| `sport_heart_ellipses.pdf` / `.png` | Generated ellipse figure |
-| `trends_by_classification.pdf` / `.png` | Generated trends figure |
+| [`plot_trends.py`](plot_trends.py) | Summary figure: one ±1 SD ellipse per exercise class, same axes |
+| `sport_heart_ellipses.pdf` / `.png` | Generated per-sport ellipse figure |
+| `trends_by_classification.pdf` / `.png` | Generated summary figure |
