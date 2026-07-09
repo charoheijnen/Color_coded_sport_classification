@@ -107,6 +107,46 @@ This mirrors the Mitchell result: remodeling tracks whole-body endurance load
 upper-vs-lower-body split. Groupings are judgment-based and editable in
 `analyze_body.py`.
 
+## The cleanest split the data will give
+
+Instead of imposing a classification, `analyze_split.py` *asks the data* for the
+best two-group split: it standardizes the two axes and runs a deterministic
+2-means clustering on the 25 sport means (`python plot_split.py`).
+
+![Best two-group split](best_two_group_split.png)
+
+The optimal boundary runs along the **overall-remodeling diagonal** (LVEDd and
+wall thickness are correlated `r = 0.79`, so the main axis of variation is
+cardiac *size*), splitting the sports into two clusters:
+
+- **Larger hearts** (13 sports, n = 469): rowing, cycling, canoeing, cross-
+  country skiing, water polo, soccer, roller hockey, volleyball, wrestling/judo,
+  boxing, bobsled, throws, weightlifting — LVEDd 54.7 ± 3.7, wall 10.3 ± 1.2 mm.
+- **Smaller hearts** (12 sports, n = 478): track, swimming, roller-skating,
+  pentathlon, tennis, fencing, alpine skiing, equestrian, handball, sailing,
+  tae kwon do, diving — LVEDd 51.2 ± 4.0, wall 9.2 ± 1.1 mm.
+
+**This separates roughly twice as well as any imposed classification:**
+
+| Discriminator            | LVEDd Cohen's *d* | Wall Cohen's *d* |
+|--------------------------|:-----------------:|:----------------:|
+| Mitchell (best contrast) |       0.55        |       0.72       |
+| Body region (best)       |       0.46        |       0.51       |
+| **Data-driven split**    |     **0.89**      |     **0.94**     |
+
+Group means differ by Δ = 3.45 mm (LVEDd) and 1.11 mm (wall), both
+`p < 1e-38`; the sport-level clustering has a silhouette of 0.50.
+
+**Caveat / interpretation.** The discriminator is essentially *magnitude of
+remodeling* (LV mass), not a single tidy sport attribute: the "larger" group
+mixes sustained-output endurance sports (rowing, cycling, canoeing) with
+high-pressure strength/power sports (weightlifting, throws, wrestling), while
+some endurance sports (swimming, track) land in the "smaller" group. It cuts
+across the Mitchell and body-region schemes rather than reproducing either. And
+although the sport *averages* cluster cleanly, individual athletes still overlap
+about 50% along the discriminant (within-sport variability is large) — so this
+is a strong separation of sport means, not of individual hearts.
+
 ## Files
 
 | File | Purpose |
@@ -116,6 +156,9 @@ upper-vs-lower-body split. Groupings are judgment-based and editable in
 | [`plot_trends.py`](plot_trends.py) | Summary figure: one ±1 SD ellipse per Mitchell class, same axes |
 | [`analyze_body.py`](analyze_body.py) | Upper/lower/whole-body statistics, ANOVA, and pairwise tests |
 | [`plot_body.py`](plot_body.py) | Summary figure: one ±1 SD ellipse per body region, same axes |
+| [`analyze_split.py`](analyze_split.py) | Data-driven 2-means split + separation metrics |
+| [`plot_split.py`](plot_split.py) | Figure: the two clusters, their ellipses, and the boundary |
 | `sport_heart_ellipses.pdf` / `.png` | Generated per-sport ellipse figure |
 | `trends_by_classification.pdf` / `.png` | Generated Mitchell-class summary figure |
 | `trends_by_body_region.pdf` / `.png` | Generated body-region summary figure |
+| `best_two_group_split.pdf` / `.png` | Generated data-driven split figure |
