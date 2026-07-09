@@ -126,16 +126,19 @@ def analyze(idx_mean, idx_sd, label):
               f"t={t:6.2f}  p={pp:.2e} {stars(pp):<3}  d={d:+.2f}")
 
 
-analyze(3, 4, "LV END-DIASTOLIC DIMENSION (mm)")
-analyze(5, 6, "LV WALL THICKNESS (mm)")
+def weighted_corr():
+    """Athlete-weighted correlation of LVEDd and wall thickness across sports."""
+    n = np.array([r[2] for r in DATA], float)
+    x = np.array([r[3] for r in DATA], float)
+    y = np.array([r[5] for r in DATA], float)
+    w = n / n.sum()
+    xm, ym = (w * x).sum(), (w * y).sum()
+    cov = (w * (x - xm) * (y - ym)).sum()
+    return cov / np.sqrt((w * (x - xm) ** 2).sum() * (w * (y - ym) ** 2).sum())
 
-# Correlation of the two dimensions across sports (athlete-weighted)
-n = np.array([r[2] for r in DATA], float)
-x = np.array([r[3] for r in DATA], float)
-y = np.array([r[5] for r in DATA], float)
-w = n / n.sum()
-xm, ym = (w * x).sum(), (w * y).sum()
-cov = (w * (x - xm) * (y - ym)).sum()
-r = cov / np.sqrt((w * (x - xm) ** 2).sum() * (w * (y - ym) ** 2).sum())
-print(f"\n{'='*70}\nAcross the 25 sports: weighted corr(LVEDd, wall thickness) "
-      f"r = {r:.2f}\n{'='*70}")
+
+if __name__ == "__main__":
+    analyze(3, 4, "LV END-DIASTOLIC DIMENSION (mm)")
+    analyze(5, 6, "LV WALL THICKNESS (mm)")
+    print(f"\n{'='*70}\nAcross the 25 sports: weighted corr(LVEDd, wall "
+          f"thickness) r = {weighted_corr():.2f}\n{'='*70}")

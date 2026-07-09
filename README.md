@@ -48,6 +48,11 @@ combines within-sport and between-sport spread of the individual athletes.
 One-way ANOVA across the four categories is significant for both dimensions:
 LVEDd `F(3,943) = 11.6, p ≈ 2e-7`; wall thickness `F(3,943) = 26.8, p ≈ 1e-16`.
 
+![Trends by Mitchell classification](trends_by_classification.png)
+
+Category mean ± 95% CI, ordered by training load; brackets are Welch *t*-tests
+against the high-dynamic + static class (`python plot_trends.py`).
+
 **Trends:**
 
 - **High dynamic + static sports (rowing, cycling, canoeing, cross-country
@@ -75,4 +80,6 @@ than individual-level data; and associations are observational, not causal.
 |------|---------|
 | [`sport_heart_ellipses.py`](sport_heart_ellipses.py) | Builds the ellipse figure (PDF + PNG) |
 | [`analyze_trends.py`](analyze_trends.py) | Category statistics, ANOVA, and pairwise tests |
-| `sport_heart_ellipses.pdf` / `.png` | Generated figure |
+| [`plot_trends.py`](plot_trends.py) | Two-panel trends figure (mean ± 95% CI + significance) |
+| `sport_heart_ellipses.pdf` / `.png` | Generated ellipse figure |
+| `trends_by_classification.pdf` / `.png` | Generated trends figure |
